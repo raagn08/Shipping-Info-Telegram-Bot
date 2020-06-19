@@ -33,13 +33,20 @@ def pitneyb(update: Update, context: CallbackContext):
         trackingID = (update.message.text).split()[1]
         response = requests.get("https://parceltracking.pb.com/ptsapi/track-packages/"+trackingID)
         jsonData = json.loads(response.text)
-
-        currentStatusData = [
-            'Status: '+jsonData['currentStatus']['packageStatus'],
-            'Last Updated: '+jsonData['currentStatus']['eventDate']+' '+jsonData['currentStatus']['eventTime'],
-            'Description: '+jsonData['currentStatus']['eventDescription'],
-            'Location: '+jsonData['currentStatus']['eventLocation']['city']+", "+jsonData['currentStatus']['eventLocation']['countyOrRegion']+' - '+jsonData['currentStatus']['eventLocation']['postalOrZipCode']
-        ]
+        try:
+            currentStatusData = [
+                'Status: '+jsonData['currentStatus']['packageStatus'],
+                'Last Updated: '+jsonData['currentStatus']['eventDate']+' '+jsonData['currentStatus']['eventTime'],
+                'Description: '+jsonData['currentStatus']['eventDescription'],
+                'Location: '+jsonData['currentStatus']['eventLocation']['city']+", "+jsonData['currentStatus']['eventLocation']['countyOrRegion']+' - '+jsonData['currentStatus']['eventLocation']['postalOrZipCode']
+            ]
+        except KeyError:
+            currentStatusData = [
+                'Status: '+jsonData['currentStatus']['packageStatus'],
+                'Last Updated: '+jsonData['currentStatus']['eventDate']+' '+jsonData['currentStatus']['eventTime'],
+                'Description: '+jsonData['currentStatus']['eventDescription'],
+                'Location: '+jsonData['currentStatus']['eventLocation']['city']+", "+jsonData['currentStatus']['eventLocation']['countyOrRegion']+' - '
+            ]
         currentStatusData = "\n".join(currentStatusData)
 
         history = []
